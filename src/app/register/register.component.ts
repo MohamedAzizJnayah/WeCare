@@ -12,7 +12,7 @@ export class RegisterComponent {
   user: any = {
     username: '',
     password: '',
-    role: 'doctor'
+    role: ''
   };
   successMessage: string = ''; // Message de succès
   errorMessage: string = '';   // Message d'erreur
@@ -31,29 +31,34 @@ export class RegisterComponent {
   }
 
   register() {
-    console.log('Registering user:', this.user);
-  
-    const checkUrl = `http://localhost:3600/api/medecin/findByEmail/${this.user.username}`; // URL pour vérifier l'existence
-    const createUrl = 'http://localhost:3600/api/medecin'; // URL pour créer un nouveau médecin
-  
-    // Étape 1 : Vérifier si le médecin existe déjà
+    // URL de vérification de l'existence du médecin ou du patient
+    const checkUrlDoctor = `http://localhost:3600/api/medecin/findByEmail/${this.user.username}`;
+    const checkUrlPatient = `http://localhost:3600/api/patient/patientByEmail/${this.user.username}`;
+    const createUrlDoctor = 'http://localhost:3600/api/medecin';
+    const createUrlPatient = 'http://localhost:3600/api/patient';
+
+    // Sélectionner l'URL de vérification en fonction du rôle
+    const checkUrl = this.user.role === 'doctor' ? checkUrlDoctor : checkUrlPatient;
+    const createUrl = this.user.role === 'doctor' ? createUrlDoctor : createUrlPatient;
+    
+    // Étape 1 : Vérifier si le médecin ou patient existe déjà
     this.http.get(checkUrl).subscribe(
-      (existingDoctor: any) => {
-        if (existingDoctor && Object.keys(existingDoctor).length > 0) {
-          // Si le médecin existe, afficher un message d'erreur
+      (existingUser: any) => {
+        if (existingUser && Object.keys(existingUser).length > 0) {
+          // Si l'utilisateur existe déjà, afficher un message d'erreur
           this.successMessage = '';
-          this.errorMessage = `Le médecin avec l'email "${this.user.username}" existe déjà.`;
-          console.log('Médecin trouvé :', existingDoctor);
+          this.errorMessage = `Le ${this.user.role} avec l'email "${this.user.username}" existe déjà.`;
+          console.log(`${this.user.role} trouvé :`, existingUser);
         } else {
-          // Si l'objet est vide, traiter comme médecin inexistant
-          this.createDoctor(createUrl);
+          // Si l'objet est vide, traiter comme utilisateur inexistant
+          this.createUser(createUrl);
         }
       },
       error => {
         if (error.status === 404) {
-          // Si le médecin n'existe pas (404), on le crée
-          console.log('Médecin introuvable, création d\'un nouveau compte.');
-          this.createDoctor(createUrl);
+          // Si l'utilisateur n'existe pas (404), on le crée
+          console.log(`${this.user.role} introuvable, création d'un nouveau compte.`);
+          this.createUser(createUrl);
         } else {
           // Si une autre erreur survient, afficher un message d'erreur générique
           this.successMessage = '';
@@ -64,62 +69,93 @@ export class RegisterComponent {
     );
   }
   
-  // Méthode pour créer un médecin
-  private createDoctor(createUrl: string) {
-    const doctor = {
+  // Méthode pour créer un utilisateur (médecin ou patient)
+  private createUser(createUrl: string) {
+    const user = {
       name: this.user.username,
       email: this.user.username
     };
-  
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-  
-    // Étape 2 : Créer le médecin
-    this.http.post(createUrl, JSON.stringify(doctor), { headers }).subscribe(
+
+    // Étape 2 : Créer l'utilisateur (médecin ou patient)
+    this.http.post(createUrl, JSON.stringify(user), { headers }).subscribe(
       response => {
-        this.successMessage = 'Médecin enregistré avec succès !';
+        this.successMessage = `${this.user.role.charAt(0).toUpperCase() + this.user.role.slice(1)} enregistré avec succès !`;
         this.errorMessage = '';
-        console.log('Médecin enregistré avec succès :', response);
+        console.log(`${this.user.role} enregistré avec succès :`, response);
       },
       createError => {
         this.successMessage = '';
         this.errorMessage = 'Erreur lors de l\'enregistrement. Veuillez réessayer.';
-        console.error('Erreur lors de l\'enregistrement du médecin :', createError);
+        console.error(`Erreur lors de l\'enregistrement du ${this.user.role} :`, createError);
+      }
+    );
+  }
+
+  login() {
+    console.log('Logging in user:', this.user);
+  
+    // URL de vérification de l'existence du médecin ou du patient
+    const checkUrlDoctor = `http://localhost:3600/api/medecin/findByEmail/${this.user.username}`;
+    const checkUrlPatient = `http://localhost:3600/api/patient/patientByEmail/${this.user.username}`;
+  
+    // Sélectionner l'URL de vérification en fonction du rôle
+    const checkUrl = this.user.role === 'doctor' ? checkUrlDoctor : checkUrlPatient;
+  
+    // Étape 1 : Vérifier si l'utilisateur (médecin ou patient) existe
+    this.http.get(checkUrl).subscribe(
+      (existingUser: any) => {
+        if (existingUser && Object.keys(existingUser).length > 0) {
+          // Si l'utilisateur existe, effectuer la connexion
+          console.log(`${this.user.role} trouvé :`, existingUser);
+  
+          // Créer un objet avec les identifiants de l'utilisateur
+          const loginData = {
+            username: this.user.username,
+            password: this.user.password
+          };
+  
+          // URL de connexion en fonction du rôle
+          const loginUrl = this.user.role === 'doctor' 
+                            ? 'http://localhost:3600/api/medecin/login' 
+                            : 'http://localhost:3600/api/patient/login';
+  
+          // Effectuer la connexion
+          this.http.post(loginUrl, loginData).subscribe(
+            response => {
+              this.successMessage = `${this.user.role.charAt(0).toUpperCase() + this.user.role.slice(1)} connecté avec succès !`;
+              this.errorMessage = '';
+              console.log(`${this.user.role} connecté avec succès :`, response);
+            },
+            error => {
+              this.successMessage = '';
+              this.errorMessage = 'Erreur lors de la connexion. Veuillez vérifier vos identifiants.';
+              console.error(`Erreur lors de la connexion du ${this.user.role} :`, error);
+            }
+          );
+        } else {
+          // Si l'utilisateur n'existe pas, afficher un message d'erreur
+          this.successMessage = '';
+          this.errorMessage = `Le ${this.user.role} avec l'email "${this.user.username}" n'existe pas.`;
+          console.error(`Le ${this.user.role} n'existe pas.`);
+        }
+      },
+      error => {
+        this.successMessage = '';
+        this.errorMessage = 'Erreur lors de la vérification. Veuillez réessayer.';
+        console.error('Erreur lors de la vérification de l\'utilisateur :', error);
       }
     );
   }
   
-
-
-  login() {
-    console.log('Logging in user:', this.user);
-
-    const url = 'http://localhost:3600/api/medecin';
-
-    this.http.post(url, this.user).subscribe(
-      response => {
-        this.successMessage = 'Connexion réussie !';
-        this.errorMessage = '';
-        console.log('User logged in successfully!', response);
-      },
-      error => {
-        this.successMessage = '';
-        this.errorMessage = 'Erreur lors de la connexion. Veuillez vérifier vos identifiants.';
-        console.error('Error logging in user:', error);
-      }
-    );
-  }
 
   toggleForm() {
     this.isLogin = !this.isLogin;
     this.user = { username: '', password: '', role: this.role };
     this.successMessage = '';
     this.errorMessage = '';
-  }
-
-  changeRole(role: string) {
-    this.role = role;
-    this.user.role = role;
   }
 }
