@@ -1,0 +1,69 @@
+<div class="container">
+  <h2>{{isLogin ? 'Login' : 'Register'}} - {{role}}</h2>
+  <form (ngSubmit)="onSubmit()" #authForm="ngForm">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input
+        type="text"
+        id="username"
+        class="form-control"
+        placeholder="Enter your username"
+        required
+        [(ngModel)]="user.username"
+        name="username"
+        #username="ngModel"
+      />
+      <div *ngIf="username.invalid && username.touched" class="alert alert-danger">
+        Username is required.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        class="form-control"
+        placeholder="Enter your password"
+        required
+        [(ngModel)]="user.password"
+        name="password"
+        #password="ngModel"
+      />
+      <div *ngIf="password.invalid && password.touched" class="alert alert-danger">
+        Password is required.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="role">Role</label>
+      <select
+        id="role"
+        class="form-control"
+        [(ngModel)]="user.role"
+        name="role"
+        required
+      >
+        <option value="doctor">Doctor</option>
+        <option value="patient">Patient</option>
+      </select>
+    </div>
+
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="authForm.invalid"
+    >
+      {{isLogin ? 'Login' : 'Register'}}
+    </button>
+  </form>
+
+  <div class="mt-3">
+    <p *ngIf="isLogin">
+      Don't have an account? <a (click)="toggleForm()">Register here</a>
+    </p>
+    <p *ngIf="!isLogin">
+      Already have an account? <a (click)="toggleForm()">Login here</a>
+    </p>
+  </div>
+</div>

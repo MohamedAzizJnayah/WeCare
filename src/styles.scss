@@ -1,0 +1,67 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: juana, "Helvetica Neue", sans-serif; }
+
+@font-face {
+  font-family: "Degan";
+  src: url("./assets/fonts/Degan\ -\ PERSONAL\ USE\ ONLY.ttf");
+}
+
+@font-face {
+  font-family: "Apotik";
+  src: url("./assets/fonts/Apotik-6Y85Y.ttf");
+}
+
+@font-face {
+  font-family: "juana";
+  src: url("./assets/fonts/juana-semi-bold.ttf");
+}
+
+@font-face {
+  font-family: "OpenSans";
+  src: url("./assets/fonts/OpenSans-VariableFont_wdth\,wght.ttf");
+}
+
+@font-face {
+  font-family: "Zefani";
+  src: url("./assets/fonts/Zefani_Uppercase_Demo-Regular.otf");
+}
+
+@font-face {
+  font-family: "GTWalsheimPro";
+  src: url("./assets/fonts/GTWalsheimPro-CondensedLight.ttf");
+}
+
+@font-face {
+  font-family: "GTWalsheimProBold";
+  src: url("./assets/fonts/GTWalsheimPro-CondensedBold.ttf");
+}
+
+@font-face {
+  font-family: "GTWalsheimProBlack";
+  src: url("./assets/fonts/GTWalsheimPro-CondensedBlack.ttf");
+}
+
+.mat-body,
+.mat-body-1,
+.mat-typography .mat-body,
+.mat-typography .mat-body-1,
+.mat-typography {
+  font-family: GTWalsheimPro !important;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+label,
+span,
+div,
+p,
+input,
+button,
+a {
+  font-family: GTWalsheimPro !important;
+}
