@@ -1,5 +1,14 @@
 <div class="container">
-  <h2>{{isLogin ? 'Login' : 'Register'}} - {{role}}</h2>
+  <h2>{{ isLogin ? "Login" : "Register" }} - {{ role }}</h2>
+
+  <!-- Messages de succès et d'erreur -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
   <form (ngSubmit)="onSubmit()" #authForm="ngForm">
     <div class="form-group">
       <label for="username">Username</label>
@@ -13,7 +22,10 @@
         name="username"
         #username="ngModel"
       />
-      <div *ngIf="username.invalid && username.touched" class="alert alert-danger">
+      <div
+        *ngIf="username.invalid && username.touched"
+        class="alert alert-danger"
+      >
         Username is required.
       </div>
     </div>
@@ -30,7 +42,10 @@
         name="password"
         #password="ngModel"
       />
-      <div *ngIf="password.invalid && password.touched" class="alert alert-danger">
+      <div
+        *ngIf="password.invalid && password.touched"
+        class="alert alert-danger"
+      >
         Password is required.
       </div>
     </div>
@@ -49,12 +64,8 @@
       </select>
     </div>
 
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [disabled]="authForm.invalid"
-    >
-      {{isLogin ? 'Login' : 'Register'}}
+    <button type="submit" class="btn btn-primary" [disabled]="authForm.invalid">
+      {{ isLogin ? "Login" : "Register" }}
     </button>
   </form>
 

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { HttpClient ,HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -8,18 +7,22 @@ import { Observable } from 'rxjs';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-  isLogin: boolean = false; // Par défaut, on est en mode inscription
-  role: string = 'doctor'; // Par défaut, on choisit 'doctor'
+  isLogin: boolean = false; // Par défaut, mode inscription
+  role: string = 'doctor'; // Par défaut, rôle 'doctor'
   user: any = {
     username: '',
     password: '',
     role: 'doctor'
   };
+  successMessage: string = ''; // Message de succès
+  errorMessage: string = '';   // Message d'erreur
 
   constructor(private http: HttpClient) {}
 
-  // Méthode pour soumettre le formulaire
   onSubmit() {
+    this.successMessage = '';
+    this.errorMessage = '';
+
     if (this.isLogin) {
       this.login();
     } else {
@@ -27,70 +30,96 @@ export class RegisterComponent {
     }
   }
 
-  // Fonction d'inscription
-  
-
   register() {
     console.log('Registering user:', this.user);
   
-    // URL du backend Spring Boot
-    const url = 'http://localhost:3600/api/medecin';  // URL du contrôleur Spring Boot
+    const checkUrl = `http://localhost:3600/api/medecin/findByEmail/${this.user.username}`; // URL pour vérifier l'existence
+    const createUrl = 'http://localhost:3600/api/medecin'; // URL pour créer un nouveau médecin
   
-    // Créez un objet Medecin basé sur les données du formulaire
-    const doctor = {
-      
-      name: this.user.username,
-      // specialty: 'Specialty here',  // Vous pouvez ajouter un champ pour la spécialité dans le formulaire
-      // contact: 'Contact here',      // Idem pour le contact
-      email: this.user.username ,  // Exemple de génération d'email
-    };
-  
-    // Définir les en-têtes HTTP
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json' // En-tête pour spécifier que les données sont au format JSON
-    });
-  
-    // Envoi de la requête HTTP avec les en-têtes et les données en JSON
-    this.http.post(url, JSON.stringify(doctor), { headers }).subscribe(
-      response => {
-        console.log('Medecin registered successfully:', response);
-        // Actions après l'enregistrement, comme la redirection ou un message de succès
+    // Étape 1 : Vérifier si le médecin existe déjà
+    this.http.get(checkUrl).subscribe(
+      (existingDoctor: any) => {
+        if (existingDoctor && Object.keys(existingDoctor).length > 0) {
+          // Si le médecin existe, afficher un message d'erreur
+          this.successMessage = '';
+          this.errorMessage = `Le médecin avec l'email "${this.user.username}" existe déjà.`;
+          console.log('Médecin trouvé :', existingDoctor);
+        } else {
+          // Si l'objet est vide, traiter comme médecin inexistant
+          this.createDoctor(createUrl);
+        }
       },
       error => {
-        console.error('Error registering Medecin:', error);
-        // Actions en cas d'erreur
+        if (error.status === 404) {
+          // Si le médecin n'existe pas (404), on le crée
+          console.log('Médecin introuvable, création d\'un nouveau compte.');
+          this.createDoctor(createUrl);
+        } else {
+          // Si une autre erreur survient, afficher un message d'erreur générique
+          this.successMessage = '';
+          this.errorMessage = 'Une erreur s\'est produite lors de la vérification. Veuillez réessayer.';
+          console.error('Erreur lors de la vérification :', error);
+        }
       }
     );
   }
   
+  // Méthode pour créer un médecin
+  private createDoctor(createUrl: string) {
+    const doctor = {
+      name: this.user.username,
+      email: this.user.username
+    };
+  
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+  
+    // Étape 2 : Créer le médecin
+    this.http.post(createUrl, JSON.stringify(doctor), { headers }).subscribe(
+      response => {
+        this.successMessage = 'Médecin enregistré avec succès !';
+        this.errorMessage = '';
+        console.log('Médecin enregistré avec succès :', response);
+      },
+      createError => {
+        this.successMessage = '';
+        this.errorMessage = 'Erreur lors de l\'enregistrement. Veuillez réessayer.';
+        console.error('Erreur lors de l\'enregistrement du médecin :', createError);
+      }
+    );
+  }
   
 
-  // Fonction de connexion
+
   login() {
     console.log('Logging in user:', this.user);
 
-    // Vous pouvez appeler votre API Spring Boot ici pour authentifier l'utilisateur
-    const url = 'http://localhost:3600/api/medecin';  // Modifiez l'URL en fonction de votre API
+    const url = 'http://localhost:3600/api/medecin';
 
-    // Envoi des données au backend (Spring Boot)
-    this.http.post(url, this.user).subscribe(response => {
-      console.log('User logged in successfully!', response);
-      // Ajoutez des actions après la connexion, comme une redirection ou un message de succès
-    }, error => {
-      console.error('Error logging in user', error);
-      // Ajoutez une logique pour afficher une erreur à l'utilisateur
-    });
+    this.http.post(url, this.user).subscribe(
+      response => {
+        this.successMessage = 'Connexion réussie !';
+        this.errorMessage = '';
+        console.log('User logged in successfully!', response);
+      },
+      error => {
+        this.successMessage = '';
+        this.errorMessage = 'Erreur lors de la connexion. Veuillez vérifier vos identifiants.';
+        console.error('Error logging in user:', error);
+      }
+    );
   }
 
-  // Permet de basculer entre le formulaire de login et celui d'inscription
   toggleForm() {
     this.isLogin = !this.isLogin;
-    this.user = { username: '', password: '', role: this.role };  // Reset user fields when switching forms
+    this.user = { username: '', password: '', role: this.role };
+    this.successMessage = '';
+    this.errorMessage = '';
   }
 
-  // Méthode pour changer de rôle entre 'doctor' et 'patient'
   changeRole(role: string) {
     this.role = role;
-    this.user.role = role;  // Met à jour le rôle de l'utilisateur
+    this.user.role = role;
   }
 }
