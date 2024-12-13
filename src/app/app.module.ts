@@ -9,6 +9,8 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatListModule } from '@angular/material/list';
+
 import {MatSelectModule} from '@angular/material/select';
 import {MatCardModule} from '@angular/material/card';
 import {MatDividerModule} from '@angular/material/divider';
@@ -27,12 +29,12 @@ import { HttpClient } from '@angular/common/http';
 import {MatDialogModule} from '@angular/material/dialog';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { DoctorDashboardComponent } from './doctor-dashboard/doctor-dashboard.component';
+import { PatientDashboardComponent } from './patient-dashboard/patient-dashboard.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,14 +42,15 @@ import { DoctorDashboardComponent } from './doctor-dashboard/doctor-dashboard.co
     RegisterComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,
-    DashboardComponent,
     DoctorDashboardComponent,
+    PatientDashboardComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     MatToolbarModule,
     BrowserAnimationsModule,
+    MatListModule,
     MatButtonModule,
     MatCardModule,
     MatIconModule,

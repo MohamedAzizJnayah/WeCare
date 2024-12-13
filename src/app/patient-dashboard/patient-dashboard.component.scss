@@ -1,0 +1,110 @@
+// Navbar Styling
+.navbar {
+    background-color: #08a29e;
+    padding: 0 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: white;
+    letter-spacing: 0.5px;
+  }
+  
+  .spacer {
+    flex-grow: 1;
+  }
+  
+  button {
+    color: white;
+    font-size: 1.1rem;
+    margin-left: 15px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+  }
+  
+  button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+  }
+  
+  // Search Container Styling
+  .search-container {
+    padding: 1.5rem 16px;
+    background-color: #f8f8f8;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px 8px 0 0;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .mat-form-field {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  
+  .mat-label {
+    font-size: 1.1rem;
+  }
+  
+  .mat-input-element {
+    font-size: 1rem;
+  }
+  
+  // Doctor List Styling
+  .doctor-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 16px;
+    padding: 0;
+  }
+  
+  .doctor-item {
+    padding: 1rem;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .doctor-item p {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  .doctor-item:last-child {
+    border-bottom: none;
+  }
+  
+  .doctor-item:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+  }
+  
+  // No Doctors Styling
+  .no-doctors {
+    color: #f44336;
+    font-size: 1.2rem;
+    text-align: center;
+    margin-top: 2rem;
+    font-weight: bold;
+  }
+  
