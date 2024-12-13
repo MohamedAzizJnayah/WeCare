@@ -12,7 +12,9 @@ export class RegisterComponent {
   user: any = {
     username: '',
     password: '',
-    role: ''
+    role: '',
+    email: '', // Ajout de l'email
+    specialite: '' // Ajout de la spécialité pour le rôle doctor
   };
   successMessage: string = ''; // Message de succès
   errorMessage: string = '';   // Message d'erreur
@@ -32,22 +34,22 @@ export class RegisterComponent {
 
   register() {
     // URL de vérification de l'existence du médecin ou du patient
-    const checkUrlDoctor = `http://localhost:3600/api/medecin/findByEmail/${this.user.username}`;
-    const checkUrlPatient = `http://localhost:3600/api/patient/patientByEmail/${this.user.username}`;
+    const checkUrlDoctor = `http://localhost:3600/api/medecin/findByEmail/${this.user.email}`;
+    const checkUrlPatient = `http://localhost:3600/api/patient/patientByEmail/${this.user.email}`;
     const createUrlDoctor = 'http://localhost:3600/api/medecin';
     const createUrlPatient = 'http://localhost:3600/api/patient';
 
     // Sélectionner l'URL de vérification en fonction du rôle
     const checkUrl = this.user.role === 'doctor' ? checkUrlDoctor : checkUrlPatient;
     const createUrl = this.user.role === 'doctor' ? createUrlDoctor : createUrlPatient;
-    
+
     // Étape 1 : Vérifier si le médecin ou patient existe déjà
     this.http.get(checkUrl).subscribe(
       (existingUser: any) => {
         if (existingUser && Object.keys(existingUser).length > 0) {
           // Si l'utilisateur existe déjà, afficher un message d'erreur
           this.successMessage = '';
-          this.errorMessage = `Le ${this.user.role} avec l'email "${this.user.username}" existe déjà.`;
+          this.errorMessage = `Le ${this.user.role} avec l'email "${this.user.email}" existe déjà.`;
           console.log(`${this.user.role} trouvé :`, existingUser);
         } else {
           // Si l'objet est vide, traiter comme utilisateur inexistant
@@ -68,13 +70,19 @@ export class RegisterComponent {
       }
     );
   }
-  
+
   // Méthode pour créer un utilisateur (médecin ou patient)
   private createUser(createUrl: string) {
     const user = {
-      name: this.user.username,
-      email: this.user.username
+      nom: this.user.username,
+      email: this.user.email,       // Envoi de l'email
+      password: this.user.password,
+      specialitie: {
+        specialityName: this.user.specialite // Ajout de la spécialité dans un objet imbriqué
+      }
     };
+    
+    console.log("l objet a envoye ",user)
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
@@ -99,8 +107,8 @@ export class RegisterComponent {
     console.log('Logging in user:', this.user);
   
     // URL de vérification de l'existence du médecin ou du patient
-    const checkUrlDoctor = `http://localhost:3600/api/medecin/findByEmail/${this.user.username}`;
-    const checkUrlPatient = `http://localhost:3600/api/patient/patientByEmail/${this.user.username}`;
+    const checkUrlDoctor = `http://localhost:3600/api/medecin/findByEmail/${this.user.email}`;
+    const checkUrlPatient = `http://localhost:3600/api/patient/patientByEmail/${this.user.email}`;
   
     // Sélectionner l'URL de vérification en fonction du rôle
     const checkUrl = this.user.role === 'doctor' ? checkUrlDoctor : checkUrlPatient;
@@ -114,7 +122,7 @@ export class RegisterComponent {
   
           // Créer un objet avec les identifiants de l'utilisateur
           const loginData = {
-            username: this.user.username,
+            username: this.user.email,  // Utilisation de l'email pour la connexion
             password: this.user.password
           };
   
@@ -139,7 +147,7 @@ export class RegisterComponent {
         } else {
           // Si l'utilisateur n'existe pas, afficher un message d'erreur
           this.successMessage = '';
-          this.errorMessage = `Le ${this.user.role} avec l'email "${this.user.username}" n'existe pas.`;
+          this.errorMessage = `Le ${this.user.role} avec l'email "${this.user.email}" n'existe pas.`;
           console.error(`Le ${this.user.role} n'existe pas.`);
         }
       },
@@ -150,11 +158,10 @@ export class RegisterComponent {
       }
     );
   }
-  
 
   toggleForm() {
     this.isLogin = !this.isLogin;
-    this.user = { username: '', password: '', role: this.role };
+    this.user = { username: '', password: '', role: this.role, email: '', specialite: '' };
     this.successMessage = '';
     this.errorMessage = '';
   }

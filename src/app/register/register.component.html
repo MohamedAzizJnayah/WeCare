@@ -64,6 +64,39 @@
       </select>
     </div>
 
+    <!-- Conditionnel : afficher le champ email pour Doctor -->
+    <div *ngIf="user.role === 'doctor'" class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        class="form-control"
+        placeholder="Enter your email"
+        required
+        [(ngModel)]="user.email"
+        name="email"
+        #email="ngModel"
+      />
+      <div *ngIf="email.invalid && email.touched" class="alert alert-danger">
+        Email is required.
+      </div>
+    </div>
+
+    <!-- Conditionnel : afficher le champ spécialité si le rôle est Doctor -->
+    <div *ngIf="user.role === 'doctor'" class="form-group">
+      <label for="specialite">Specialité</label>
+      <select
+        id="specialite"
+        class="form-control"
+        [(ngModel)]="user.specialite"
+        name="specialite"
+      >
+        <option value="cardiologist">Cardiologist</option>
+        <option value="neurologist">Neurologist</option>
+        <option value="general">General</option>
+      </select>
+    </div>
+
     <button type="submit" class="btn btn-primary" [disabled]="authForm.invalid">
       {{ isLogin ? "Login" : "Register" }}
     </button>
