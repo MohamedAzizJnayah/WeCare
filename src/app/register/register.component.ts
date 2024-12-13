@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -19,7 +19,7 @@ export class RegisterComponent {
   successMessage: string = ''; // Message de succès
   errorMessage: string = '';   // Message d'erreur
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   onSubmit() {
     this.successMessage = '';
@@ -119,10 +119,10 @@ export class RegisterComponent {
         if (existingUser && Object.keys(existingUser).length > 0) {
           // Si l'utilisateur existe, effectuer la connexion
           console.log(`${this.user.role} trouvé :`, existingUser);
-  
+    
           // Créer un objet avec les identifiants de l'utilisateur
           const loginData = {
-            username: this.user.email,  // Utilisation de l'email pour la connexion
+            email: this.user.email,  // Utilisation de l'email pour la connexion
             password: this.user.password
           };
   
@@ -137,6 +137,7 @@ export class RegisterComponent {
               this.successMessage = `${this.user.role.charAt(0).toUpperCase() + this.user.role.slice(1)} connecté avec succès !`;
               this.errorMessage = '';
               console.log(`${this.user.role} connecté avec succès :`, response);
+              this.router.navigate(['dashboard']);
             },
             error => {
               this.successMessage = '';

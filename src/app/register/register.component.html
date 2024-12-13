@@ -10,7 +10,7 @@
   </div>
 
   <form (ngSubmit)="onSubmit()" #authForm="ngForm">
-    <div class="form-group">
+    <div *ngIf="!isLogin" class="form-group">
       <label for="username">Username</label>
       <input
         type="text"
@@ -27,6 +27,23 @@
         class="alert alert-danger"
       >
         Username is required.
+      </div>
+    </div>
+    <!-- Conditionnel : afficher le champ email pour Doctor -->
+    <div *ngIf="user.role === 'doctor'" class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        class="form-control"
+        placeholder="Enter your email"
+        required
+        [(ngModel)]="user.email"
+        name="email"
+        #email="ngModel"
+      />
+      <div *ngIf="email.invalid && email.touched" class="alert alert-danger">
+        Email is required.
       </div>
     </div>
 
@@ -64,26 +81,8 @@
       </select>
     </div>
 
-    <!-- Conditionnel : afficher le champ email pour Doctor -->
-    <div *ngIf="user.role === 'doctor'" class="form-group">
-      <label for="email">Email</label>
-      <input
-        type="email"
-        id="email"
-        class="form-control"
-        placeholder="Enter your email"
-        required
-        [(ngModel)]="user.email"
-        name="email"
-        #email="ngModel"
-      />
-      <div *ngIf="email.invalid && email.touched" class="alert alert-danger">
-        Email is required.
-      </div>
-    </div>
-
     <!-- Conditionnel : afficher le champ spécialité si le rôle est Doctor -->
-    <div *ngIf="user.role === 'doctor'" class="form-group">
+    <div *ngIf="user.role === 'doctor' && !isLogin" class="form-group">
       <label for="specialite">Specialité</label>
       <select
         id="specialite"
