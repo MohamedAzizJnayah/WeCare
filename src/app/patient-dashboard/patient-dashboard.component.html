@@ -37,7 +37,9 @@
           {{ doctor.specialitie?.specialityName || "Non spécifiée" }}
         </p>
         <!-- Bouton de réservation pour chaque docteur -->
-        <button class="reserve-btn">Réserver un rendez-vous</button>
+        <button class="reserve-btn" (click)="Reserver(doctor)">
+          Réserver un rendez-vous
+        </button>
       </div>
     </li>
   </ul>
@@ -53,4 +55,29 @@
   <p>
     Veuillez sélectionner une spécialité pour voir les médecins disponibles.
   </p>
+</div>
+
+<!-- Formulaire de réservation avec sélecteur de date et heure -->
+<div *ngIf="showDatePicker">
+  <label for="appointmentDate">Choisir une date :</label>
+  <input
+    type="date"
+    id="appointmentDate"
+    [(ngModel)]="appointmentDate"
+    class="select-input"
+    required
+  />
+
+  <label for="appointmentTime">Choisir une heure :</label>
+  <input
+    type="time"
+    id="appointmentTime"
+    [(ngModel)]="appointmentTime"
+    class="select-input"
+    required
+  />
+
+  <button class="reserve-btn" (click)="submitReservation(selectedDoctor)">
+    Confirmer la réservation
+  </button>
 </div>

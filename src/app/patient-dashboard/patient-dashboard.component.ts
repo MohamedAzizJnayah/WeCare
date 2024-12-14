@@ -10,6 +10,10 @@ export class PatientDashboardComponent implements OnInit {
   specialties: any[] = []; // Stocke les spécialités
   selectedSpecialty: string = ''; // ID de la spécialité sélectionnée
   doctors: any[] = []; // Stocke les médecins d'une spécialité
+  showDatePicker: boolean = false; // Contrôle l'affichage du sélecteur de date
+  appointmentDate: string = ''; // Date de l'appartement
+  appointmentTime: string = ''; // Heure de l'appartement
+  selectedDoctor: any = null; // Stocke le docteur sélectionné
 
   constructor(private http: HttpClient) {}
 
@@ -47,6 +51,47 @@ export class PatientDashboardComponent implements OnInit {
       });
     } else {
       this.doctors = []; // Si aucune spécialité n'est sélectionnée
+    }
+  }
+
+  // Afficher le sélecteur de date et heure lorsque l'utilisateur clique sur un docteur
+  Reserver(doctor: any): void {
+    this.selectedDoctor = doctor; // Stocker le docteur sélectionné
+    this.showDatePicker = true;  // Afficher le sélecteur de date et heure
+  }
+
+  // Envoyer la réservation via une méthode POST
+  submitReservation(doctor: any): void {
+    if (this.appointmentDate && this.appointmentTime) {
+      // Combine la date et l'heure pour obtenir un format complet de date et heure
+      const appointmentDateTime = `${this.appointmentDate}T${this.appointmentTime}`;
+  
+      const appointmentData = {
+        "dateRDV": appointmentDateTime,  // Date et heure au format "YYYY-MM-DDTHH:MM:SS"
+        "heureRDV": appointmentDateTime, // Heure, dans ce cas c'est la même que la date
+        "patient": {
+          "id": 2  // ID du patient
+        },
+        "medecin": {
+          "id": doctor.id  // ID du médecin
+        }
+      };
+  
+      console.log(appointmentData);
+  
+      // Envoi des données de réservation à l'API
+      this.http.post('http://localhost:3600/api/rendezvous', appointmentData).subscribe({
+        next: (response) => {
+          console.log('Réservation réussie:', response);
+          alert('Rendez-vous réservé avec succès');
+        },
+        error: (error) => {
+          console.error('Erreur lors de la réservation:', error);
+          alert('Erreur lors de la réservation');
+        }
+      });
+    } else {
+      alert('Veuillez sélectionner une date et une heure');
     }
   }
   
