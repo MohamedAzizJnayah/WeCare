@@ -119,7 +119,7 @@ export class RegisterComponent {
         if (existingUser && Object.keys(existingUser).length > 0) {
           // Si l'utilisateur existe, effectuer la connexion
           console.log(`${this.user.role} trouvé :`, existingUser);
-    
+  
           // Créer un objet avec les identifiants de l'utilisateur
           const loginData = {
             email: this.user.email,  // Utilisation de l'email pour la connexion
@@ -137,7 +137,15 @@ export class RegisterComponent {
               this.successMessage = `${this.user.role.charAt(0).toUpperCase() + this.user.role.slice(1)} connecté avec succès !`;
               this.errorMessage = '';
               console.log(`${this.user.role} connecté avec succès :`, response);
-              this.router.navigate(['dashboard']);
+  
+              // Sauvegarder les informations de l'utilisateur dans sessionStorage
+              sessionStorage.setItem('user', JSON.stringify(response));  // Sauvegarde dans sessionStorage
+  
+              // Optionnel : Sauvegarder aussi le rôle pour faciliter la gestion
+              sessionStorage.setItem('role', this.user.role);
+  
+              // Rediriger vers le dashboard
+              this.router.navigate(['PatientDashboard']);
             },
             error => {
               this.successMessage = '';
@@ -159,6 +167,7 @@ export class RegisterComponent {
       }
     );
   }
+  
 
   toggleForm() {
     this.isLogin = !this.isLogin;

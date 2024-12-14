@@ -65,34 +65,41 @@ export class PatientDashboardComponent implements OnInit {
     if (this.appointmentDate && this.appointmentTime) {
       // Combine la date et l'heure pour obtenir un format complet de date et heure
       const appointmentDateTime = `${this.appointmentDate}T${this.appointmentTime}`;
-  
-      const appointmentData = {
-        "dateRDV": appointmentDateTime,  // Date et heure au format "YYYY-MM-DDTHH:MM:SS"
-        "heureRDV": appointmentDateTime, // Heure, dans ce cas c'est la même que la date
-        "patient": {
-          "id": 2  // ID du patient
-        },
-        "medecin": {
-          "id": doctor.id  // ID du médecin
-        }
-      };
-  
-      console.log(appointmentData);
-  
-      // Envoi des données de réservation à l'API
-      this.http.post('http://localhost:3600/api/rendezvous', appointmentData).subscribe({
-        next: (response) => {
-          console.log('Réservation réussie:', response);
-          alert('Rendez-vous réservé avec succès');
-        },
-        error: (error) => {
-          console.error('Erreur lors de la réservation:', error);
-          alert('Erreur lors de la réservation');
-        }
-      });
+
+      // Récupérer l'ID du patient depuis sessionStorage
+      const patient = JSON.parse(sessionStorage.getItem('user') || '{}');
+      const patientId = patient.id || null;  // Assurez-vous que l'ID est présent dans l'objet
+
+      if (patientId) {
+        const appointmentData = {
+          "dateRDV": appointmentDateTime,  // Date et heure au format "YYYY-MM-DDTHH:MM:SS"
+          "heureRDV": appointmentDateTime, // Heure, dans ce cas c'est la même que la date
+          "patient": {
+            "id": patientId  // Utiliser l'ID du patient récupéré depuis sessionStorage
+          },
+          "medecin": {
+            "id": doctor.id  // ID du médecin
+          }
+        };
+
+        console.log(appointmentData);
+
+        // Envoi des données de réservation à l'API
+        this.http.post('http://localhost:3600/api/rendezvous', appointmentData).subscribe({
+          next: (response) => {
+            console.log('Réservation réussie:', response);
+            alert('Rendez-vous réservé avec succès');
+          },
+          error: (error) => {
+            console.error('Erreur lors de la réservation:', error);
+            alert('Erreur lors de la réservation');
+          }
+        });
+      } else {
+        alert('ID du patient non trouvé dans la session');
+      }
     } else {
       alert('Veuillez sélectionner une date et une heure');
     }
   }
-  
 }
