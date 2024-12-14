@@ -1,38 +1,56 @@
-<mat-toolbar color="primary" class="navbar">
-  <mat-toolbar-row>
+<!-- Barre de navigation -->
+<div class="navbar">
+  <div class="navbar-row">
     <span class="title">Smart Doctor</span>
     <div class="spacer"></div>
-    <button mat-button>Réserver un docteur</button>
-    <button mat-button>Historique de réservation</button>
-    <button mat-button>Profil</button>
-  </mat-toolbar-row>
-</mat-toolbar>
+    <button class="btn">Réserver un docteur</button>
+    <button class="btn">Historique de réservation</button>
+    <button class="btn">Profil</button>
+  </div>
+</div>
 
 <!-- Barre de Recherche pour la spécialité -->
 <div class="search-container">
-  <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>Choisir une spécialité</mat-label>
-    <!-- Liste déroulante avec mat-select -->
-    <mat-select
-      [(ngModel)]="selectedSpecialty"
-      placeholder="Sélectionnez une spécialité"
-    >
-      <mat-option *ngFor="let specialty of specialties" [value]="specialty">
-        {{ specialty.specialityName }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  <label for="specialty">Choisir une spécialité</label>
+  <select
+    id="specialty"
+    [(ngModel)]="selectedSpecialty"
+    (change)="getDoctorsBySpecialty()"
+    class="select-input"
+  >
+    <option *ngFor="let specialty of specialties" [value]="specialty.id">
+      {{ specialty.specialityName }}
+    </option>
+  </select>
+</div>
 
-  <!-- Liste des médecins filtrés -->
-  <div class="doctor-list">
-    <mat-list>
-      <mat-list-item>
-        <div class="doctor-item">
-          <p><strong></strong></p>
-          <p></p>
-        </div>
-      </mat-list-item>
-    </mat-list>
-  </div>
-  <div>Aucun médecin trouvé</div>
+<!-- Liste des médecins filtrés -->
+<div *ngIf="doctors.length > 0">
+  <h3>Liste des Médecins</h3>
+  <ul>
+    <li *ngFor="let doctor of doctors">
+      <div class="doctor-item">
+        <p><strong>Nom :</strong> {{ doctor.nom }}</p>
+        <p><strong>Email :</strong> {{ doctor.email }}</p>
+        <p>
+          <strong>Spécialité :</strong>
+          {{ doctor.specialitie?.specialityName || "Non spécifiée" }}
+        </p>
+        <!-- Bouton de réservation pour chaque docteur -->
+        <button class="reserve-btn">Réserver un rendez-vous</button>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- Message si aucun médecin trouvé -->
+<div *ngIf="doctors.length === 0 && selectedSpecialty">
+  <p>Aucun médecin trouvé pour cette spécialité.</p>
+</div>
+
+<!-- Message si aucune spécialité n'est sélectionnée -->
+<div class="no-specialty" *ngIf="!selectedSpecialty">
+  <p>
+    Veuillez sélectionner une spécialité pour voir les médecins disponibles.
+  </p>
 </div>

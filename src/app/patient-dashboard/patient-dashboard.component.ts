@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http'; // Importez HttpClient
-import { Console } from 'console';
 
 @Component({
   selector: 'app-patient-dashboard',
@@ -8,25 +7,23 @@ import { Console } from 'console';
   styleUrls: ['./patient-dashboard.component.scss']
 })
 export class PatientDashboardComponent implements OnInit {
-  specialties: any[] = [];  // Tableau pour stocker les spécialités récupérées
-  selectedSpecialty: string = ''; // Spécialité sélectionnée
+  specialties: any[] = []; // Stocke les spécialités
+  selectedSpecialty: string = ''; // ID de la spécialité sélectionnée
+  doctors: any[] = []; // Stocke les médecins d'une spécialité
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    // Appeler la méthode pour récupérer les spécialités dès le chargement du composant
-    this.getSpecialties();
+    this.getSpecialties(); // Récupérer les spécialités au démarrage
   }
 
-  // Méthode pour récupérer les spécialités depuis l'API
+  // Récupérer les spécialités depuis l'API
   getSpecialties(): void {
     const apiUrl = 'http://localhost:3600/api/speciality'; // URL de l'API
     this.http.get<any[]>(apiUrl).subscribe({
       next: (data) => {
-        this.specialties = data;
-        console.log(data);
-        console.log(this.specialties);
-                // Assigner la réponse de l'API à la variable specialties
+        this.specialties = data; // Charger les spécialités
+        console.log('Specialties:', data);
       },
       error: (error) => {
         console.error('Erreur lors de la récupération des spécialités', error);
@@ -34,10 +31,23 @@ export class PatientDashboardComponent implements OnInit {
     });
   }
 
-  // Méthode pour filtrer les médecins selon la spécialité sélectionnée
-  filterDoctorsBySpecialty(): void {
+  // Récupérer les médecins d'une spécialité
+  getDoctorsBySpecialty(): void {
     if (this.selectedSpecialty) {
-      // Filtrer la liste des médecins en fonction de la spécialité sélectionnée (si nécessaire)
+      const apiUrl = `http://localhost:3600/api/medecin/specialite/${this.selectedSpecialty}`;
+      this.http.get<any[]>(apiUrl).subscribe({
+        next: (data) => {
+          this.doctors = data; // Charger les médecins
+          console.log('Doctors:', data);
+        },
+        error: (error) => {
+          console.error('Erreur lors de la récupération des médecins', error);
+          this.doctors = []; // Réinitialiser si erreur
+        }
+      });
+    } else {
+      this.doctors = []; // Si aucune spécialité n'est sélectionnée
     }
   }
+  
 }

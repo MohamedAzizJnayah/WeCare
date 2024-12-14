@@ -1,110 +1,269 @@
-// Navbar Styling
+/* Variables */
+$cyan: #027E7A; /* Couleur de base pour le bouton et éléments */
+$white: #fff; /* Couleur blanche */
+$dark-gray: #333; /* Couleur de texte générale */
+
+/* Général */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  background-color: #f4f6f9;
+  color: $dark-gray;
+}
+
+/* Barre de navigation */
 .navbar {
-    background-color: #08a29e;
-    padding: 0 16px;
+  background-color: $cyan;  /* Couleur de fond en cyan */
+  color: $white;
+  padding: 15px 50px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  
+  .navbar-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 60px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    gap: 40px;
   }
-  
+
   .title {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 700;
-    font-size: 1.6rem;
-    color: white;
-    letter-spacing: 0.5px;
+    font-size: 24px;
+    font-weight: 600;
+    text-transform: uppercase;
   }
-  
+
   .spacer {
     flex-grow: 1;
   }
-  
-  button {
-    color: white;
-    font-size: 1.1rem;
-    margin-left: 15px;
-    padding: 8px 16px;
-    border-radius: 4px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-  }
-  
-  button:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
-  }
-  
-  button:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
-  }
-  
-  // Search Container Styling
-  .search-container {
-    padding: 1.5rem 16px;
-    background-color: #f8f8f8;
-    position: absolute;
-    top: 70px;
-    left: 0;
-    width: 100%;
-    z-index: 10;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px 8px 0 0;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .mat-form-field {
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-  
-  .mat-label {
-    font-size: 1.1rem;
-  }
-  
-  .mat-input-element {
-    font-size: 1rem;
-  }
-  
-  // Doctor List Styling
-  .doctor-list {
-    max-height: 400px;
-    overflow-y: auto;
-    margin-top: 16px;
-    padding: 0;
-  }
-  
-  .doctor-item {
-    padding: 1rem;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  
-  .doctor-item p {
-    margin: 0;
-    font-size: 1rem;
-    color: #333;
-  }
-  
-  .doctor-item:last-child {
-    border-bottom: none;
-  }
-  
-  .doctor-item:hover {
-    background-color: #f5f5f5;
+
+  .btn {
+    background-color: $white;
+    color: $cyan;
+    padding: 8px 20px;
+    border: 1px solid $white;
+    border-radius: 6px;
     cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    margin-left: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      background-color: #f1f1f1;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 10px rgba(2, 126, 122, 0.8);
+    }
   }
-  
-  // No Doctors Styling
-  .no-doctors {
-    color: #f44336;
-    font-size: 1.2rem;
-    text-align: center;
-    margin-top: 2rem;
-    font-weight: bold;
+}
+
+/* Barre de recherche */
+.search-container {
+  margin: 30px 20px;
+  background-color: $white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 30px auto;
+
+  label {
+    font-size: 16px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 10px;
   }
-  
+
+  .select-input {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease;
+
+    &:focus {
+      border-color: $cyan;
+    }
+
+    option {
+      padding: 10px;
+    }
+  }
+}
+
+/* Liste des médecins */
+h3 {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+
+  .doctor-item {
+    background-color: $white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+    }
+
+    p {
+      margin: 8px 0;
+    }
+
+    strong {
+      color: $cyan;
+    }
+  }
+}
+
+/* Messages d'état */
+.no-specialty {
+  text-align: center;
+  background-color: $white;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 30px;
+  color: #ff3d00;
+  font-weight: bold;
+}
+
+p {
+  font-size: 14px;
+}
+
+/* Responsivité */
+@media (max-width: 768px) {
+  .navbar-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 25px;
+  }
+
+  .spacer {
+    display: none;
+  }
+
+  .btn {
+    width: 100%;
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .search-container {
+    margin: 20px;
+  }
+
+  h3 {
+    font-size: 20px;
+  }
+
+  .doctor-item {
+    margin-bottom: 15px;
+  }
+}
+
+/* Bouton Réserver avec effet blob */
+.reserve-btn {
+  position: relative;
+  padding: 12px 30px;
+  margin-bottom: 20px;
+  text-align: center;
+  text-transform: uppercase;
+  color: $white;
+  font-size: 14px;
+  font-weight: 600;
+  background-color: $cyan;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: color 0.5s, background-color 0.3s;
+  overflow: hidden;
+  z-index: 1;
+
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    background-color: $white;
+    width: 150%;
+    height: 150%;
+    border-radius: 50%;
+    transition: all 0.3s ease-in-out;
+    z-index: -1;
+  }
+
+  &::before {
+    top: -50%;
+    left: -50%;
+    transform: scale(0);
+  }
+
+  &::after {
+    bottom: -50%;
+    right: -50%;
+    transform: scale(0);
+  }
+
+  &:hover {
+    color: $cyan;
+    background-color: $white;
+
+    &::before {
+      top: 50%;
+      left: 50%;
+      transform: scale(1);
+      animation: blob 1.5s infinite;
+    }
+
+    &::after {
+      bottom: 50%;
+      right: 50%;
+      transform: scale(1);
+      animation: blob 1.5s infinite reverse;
+    }
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(2, 126, 122, 0.8);
+  }
+}
+
+/* Animation des blobs */
+@keyframes blob {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
